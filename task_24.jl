@@ -1,27 +1,47 @@
-using  HorizonSideRobots
+function ob(r,Side)
+    x = 0
+    Flg = true
+    while isborder(r,HorizonSide(Side)) && !isborder(r,HorizonSide((Side + 3) % 4))
+        move!(r,HorizonSide((Side + 3) % 4))
+        x += 1
+    end
+    if isborder(r,HorizonSide(Side)) && isborder(r,HorizonSide((Side + 3) % 4))
+        Flg = false
+    end
+    if  !isborder(r,HorizonSide(Side))     
+        move!(r,HorizonSide(Side))
+    end
+    while !isborder(r,HorizonSide(Side)) && isborder(r,HorizonSide((Side + 1) % 4))
+        move!(r,HorizonSide(Side))
+    end
+    for i = 1:x
+        move!(r,HorizonSide((Side+1) % 4))
+    end
+    return Flg
+end
 
-function Obhod2(r,side)
+function ob2(r,Side)
     a = 0
     b = 0
     x = 0
     Flg = true
-    while isborder(r,HorizonSide(side)) && !isborder(r,HorizonSide((side + 1) % 4))
-        move!(r,HorizonSide((side + 1) % 4))
+    while isborder(r,HorizonSide(Side)) && !isborder(r,HorizonSide((Side + 1) % 4))
+        move!(r,HorizonSide((Side + 1) % 4))
         x += 1
         a += 1
     end
-    if isborder(r,HorizonSide(side)) && isborder(r,HorizonSide((side + 1) % 4))
+    if isborder(r,HorizonSide(Side)) && isborder(r,HorizonSide((Side + 1) % 4))
         Flg = false
     end
-    if  !isborder(r,HorizonSide(side))     
-        move!(r,HorizonSide(side))
+    if  !isborder(r,HorizonSide(Side))     
+        move!(r,HorizonSide(Side))
     end
-    while !isborder(r,HorizonSide(side)) && isborder(r,HorizonSide((side + 3) % 4))
-        move!(r,HorizonSide(side))
+    while !isborder(r,HorizonSide(Side)) && isborder(r,HorizonSide((Side + 3) % 4))
+        move!(r,HorizonSide(Side))
         b += 1
     end
     for i = 1:x
-        move!(r,HorizonSide((side+3) % 4))
+        move!(r,HorizonSide((Side+3) % 4))
     end
     return Flg, (a)*(b)
 end
@@ -34,7 +54,7 @@ function corner(r)
             move!(r,Sud)
         end
         if isborder(r,Sud)
-            Flg =  obhod(r,2)
+            Flg =  ob(r,2)
         end
     end
     while !isborder(r,West)
@@ -42,32 +62,9 @@ function corner(r)
     end
 end
 
-
-function obhod(r,side)
-    x = 0
-    Flg = true
-    while isborder(r,HorizonSide(side)) && !isborder(r,HorizonSide((side + 3) % 4))
-        move!(r,HorizonSide((side + 3) % 4))
-        x += 1
-    end
-    if isborder(r,HorizonSide(side)) && isborder(r,HorizonSide((side + 3) % 4))
-        Flg = false
-    end
-    if  !isborder(r,HorizonSide(side))     
-        move!(r,HorizonSide(side))
-    end
-    while !isborder(r,HorizonSide(side)) && isborder(r,HorizonSide((side + 1) % 4))
-        move!(r,HorizonSide(side))
-    end
-    for i = 1:x
-        move!(r,HorizonSide((side+1) % 4))
-    end
-    return Flg
-end
-
 function scan(r)
     Flg = true
-    summ = 0
+    sum = 0
     Z = 0
     if !isborder(r,Nord)
         Flg = true
@@ -76,36 +73,35 @@ function scan(r)
             if !isborder(r,Ost)
                 move!(r,Ost)
             else
-                Flg, Z = Obhod2(r,3)
-                if summ < Z
-                    summ = Z
+                Flg, Z = ob2(r,3)
+                if sum < Z
+                    sum = Z
                 end
             end
         end
     end
-    
     Flg = true
     while !isborder(r, West) || Flg
         if !isborder(r, West)
             move!(r, West)
         else
-            Flg = obhod(r,1)
+            Flg = ob(r,1)
         end
     end
-    return summ
+    return sum
 end
 
 function task_24(r)
-    summ = 0
+    sum = 0
     Z = 0
     corner(r)
     while !isborder(r,Nord)
         Z = scan(r)
-        if summ < Z
-            summ = Z
+        if sum < Z
+            sum = Z
         end
     end
-    return summ
+    return sum
 end
 
 task_24(r)
